@@ -21,7 +21,6 @@ import Icons from "views/Icons.js";
 import Typography from "views/Typography.js";
 import DailyStockList from "views/DailyStockList";
 import Maps from "views/Maps.js";
-import Upgrade from "views/Upgrade.js";
 import UserPage from "views/UserPage.js";
 
 import ProductDailyStock from "./views/ProductDailyStock";
@@ -56,33 +55,33 @@ var dashRoutes = [{
         component: Receipts,
         layout: "/admin",
     },
-    {
-        path: "/user-page",
-        name: "User Profile",
-        icon: "users_single-02",
-        component: UserPage,
-        layout: "/admin",
-    },
-    {
-        path: "/extended-tables",
-        name: "Icons",
-        icon: "files_paper",
-        component: Icons,
-        layout: "/admin",
-    },
-    {
-        path: "/typography",
-        name: "Typography",
-        icon: "design-2_ruler-pencil",
-        component: Notifications,
-        layout: "/admin",
-    },
+    // {
+    //     path: "/user-page",
+    //     name: "User Profile",
+    //     icon: "users_single-02",
+    //     component: UserPage,
+    //     layout: "/admin",
+    // },
+    // {
+    //     path: "/extended-tables",
+    //     name: "Icons",
+    //     icon: "files_paper",
+    //     component: Icons,
+    //     layout: "/admin",
+    // },
+    // {
+    //     path: "/typography",
+    //     name: "Typography",
+    //     icon: "design-2_ruler-pencil",
+    //     component: Notifications,
+    //     layout: "/admin",
+    // },
     {
         pro: true,
-        path: "/upgrade",
+        path: "/logout",
         name: "LOG OUT",
         icon: "media-1_button-power",
-        component: Upgrade,
+        component: Payments,
         layout: "/admin",
     },
 ];
