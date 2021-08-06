@@ -49,7 +49,7 @@ function Sidebar(props) {
     <div className="sidebar" data-color={props.backgroundColor}>
       <div className="logo">
         <a
-          href="https://www.creative-tim.com?ref=nudr-sidebar"
+          href="/dashboard"
           className="simple-text logo-mini"
           target="_blank"
         >
@@ -58,7 +58,7 @@ function Sidebar(props) {
           </div>
         </a>
         <a
-          href="https://www.creative-tim.com?ref=nudr-sidebar"
+          href="/dashboard"
           className="simple-text logo-normal"
           target="_blank"
         >

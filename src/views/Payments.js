@@ -41,7 +41,7 @@ function Payments() {
             <Card>
               <CardHeader>
                 <CardTitle tag="h4">Payments</CardTitle>
-                <a class="btn btn-primary" type="button">ADD</a>
+                <a className="btn btn-primary" type="button">ADD</a>
               </CardHeader>
               <CardBody>
                 <Table responsive>

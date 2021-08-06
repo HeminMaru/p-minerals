@@ -20,7 +20,6 @@ import Notifications from "views/Notifications.js";
 import Icons from "views/Icons.js";
 import Typography from "views/Typography.js";
 import DailyStockList from "views/DailyStockList";
-import Maps from "views/Maps.js";
 import UserPage from "views/UserPage.js";
 
 import ProductDailyStock from "./views/ProductDailyStock";
@@ -53,6 +52,13 @@ var dashRoutes = [{
         name: "Receipts",
         icon: "files_paper",
         component: Receipts,
+        layout: "/admin",
+    },
+    {
+        path: "/reciept",
+        name: "Receipts",
+        icon: "files_paper",
+        component: Icons,
         layout: "/admin",
     },
     // {
