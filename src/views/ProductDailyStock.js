@@ -176,7 +176,12 @@ function ProductDailyStock() {
                   placeholder="Enter your inward stocks here"
                   type="text"
                 />
-                <Button className="btn btn-primary float-right" onClick={handleInwardSubmit}>ADD</Button>
+                <Row>
+                  <Col xs={9}></Col>
+                  <Col xs={3}>
+                    <Button className="btn btn-primary" onClick={handleInwardSubmit}>ADD</Button>
+                  </Col>
+                </Row>
               </CardHeader>
               <CardBody>
                 <Table responsive>
@@ -215,7 +220,12 @@ function ProductDailyStock() {
                           type="text"
                         />
                 </Form>
-                <a type="button" className="btn btn-primary float-right" onClick={handleconsumptionSubmit}>Consume</a>
+                <Row>
+                  <Col xs={8}></Col>
+                  <Col xs={4}>
+                    <Button className="btn btn-primary" onClick={handleconsumptionSubmit}>CONSUME</Button>
+                  </Col>
+                </Row>
               </CardHeader>
               <CardBody>
                 <Table responsive>

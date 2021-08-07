@@ -15,9 +15,12 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React, { useState } from "react";
 // react plugin used to create charts
 import { Line, Bar } from "react-chartjs-2";
+import Apollo from "../Apollo";
+import { Forms } from '../graphql';
+
 
 // reactstrap components
 import {
@@ -50,15 +53,124 @@ import {
   dashboard24HoursPerformanceChart,
 } from "variables/charts.js";
 
+import {DailyStockData} from "../variables/data.js"
+
+
+
 function Dashboard() {
+  const [dataChanged,SetDataChanged] = useState(false);
+
+
+  function hexToRGB(hex, alpha) {
+    var r = parseInt(hex.slice(1, 3), 16),
+        g = parseInt(hex.slice(3, 5), 16),
+        b = parseInt(hex.slice(5, 7), 16);
+
+    if (alpha) {
+        return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
+    } else {
+        return "rgb(" + r + ", " + g + ", " + b + ")";
+    }
+}
+
+
+
+const getProductData = (parameter) => {
+    var data = [];
+    Apollo.query(Forms.getDailyAnalysis, {}, res => {
+        if (parameter === "label") {
+            for (var i = 0; i < res.data.products.length; i++) {
+                data.push(res.data.products[i].product_name);
+            }
+        } else if (parameter === "net_stock") {
+            for (var i = 0; i < res.data.products.length; i++) {
+                data.push(res.data.products[i].net_stock);
+            }
+        }
+    });
+    return data;
+};
+
+  const dataDailyStock = (canvas) => {
+    var ctx = canvas.getContext("2d");
+    var gradientFill = ctx.createLinearGradient(0, 170, 0, 50);
+    gradientFill.addColorStop(0, "rgba(128, 182, 244, 0)");
+    gradientFill.addColorStop(1, hexToRGB("#2CA8FF", 0.6));
+    return {
+        labels: getProductData("label"),
+        datasets: [{
+            label: "Net Stock",
+            backgroundColor: gradientFill,
+            borderColor: "#2CA8FF",
+            pointBorderColor: "#FFF",
+            pointBackgroundColor: "#2CA8FF",
+            pointBorderWidth: 2,
+            pointHoverRadius: 4,
+            pointHoverBorderWidth: 1,
+            pointRadius: 4,
+            fill: true,
+            borderWidth: 1,
+            data: getProductData("net_stock"),
+        }, ],
+    };
+  };  
+
+  const optionsDailyStock = {
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            display: false,
+        },
+        tooltips: {
+            bodySpacing: 4,
+            mode: "nearest",
+            intersect: 0,
+            position: "nearest",
+            xPadding: 10,
+            yPadding: 10,
+            caretPadding: 10,
+        },
+    },
+    responsive: 1,
+    scales: {
+        y: {
+            ticks: {
+                maxTicksLimit: 7,
+            },
+            grid: {
+                zeroLineColor: "transparent",
+                drawBorder: false,
+            },
+        },
+        x: {
+            display: 0,
+            ticks: {
+                display: false,
+            },
+            grid: {
+                zeroLineColor: "transparent",
+                drawTicks: false,
+                display: false,
+                drawBorder: false,
+            },
+        },
+    },
+    layout: {
+        padding: { left: 0, right: 0, top: 15, bottom: 15 },
+    },
+  };
+
+  
   return (
     <>
       <PanelHeader
         size="lg"
         content={
-          <Line
-            data={dashboardPanelChart.data}
-            options={dashboardPanelChart.options}
+          <img
+            alt="..."
+            src={require("assets/img/p-mineralsBG.jpeg").default}
+            height="120%"
+            width="100%"
           />
         }
       />
@@ -68,7 +180,7 @@ function Dashboard() {
             <Card className="card-chart">
               <CardHeader>
                 <h5 className="card-category">Global Sales</h5>
-                <CardTitle tag="h4">Shipped Products</CardTitle>
+                <CardTitle tag="h4">PAYMENTS</CardTitle>
                 <UncontrolledDropdown>
                   <DropdownToggle
                     className="btn-round btn-outline-default btn-icon"
@@ -106,7 +218,7 @@ function Dashboard() {
             <Card className="card-chart">
               <CardHeader>
                 <h5 className="card-category">2021 Sales</h5>
-                <CardTitle tag="h4">All products</CardTitle>
+                <CardTitle tag="h4">RECEIPTS</CardTitle>
                 <UncontrolledDropdown>
                   <DropdownToggle
                     className="btn-round btn-outline-default btn-icon"
@@ -143,20 +255,21 @@ function Dashboard() {
           <Col xs={12} md={4}>
             <Card className="card-chart">
               <CardHeader>
-                <h5 className="card-category">Daily Stock Analysis</h5>
-                <CardTitle tag="h4">Last 24 Hours</CardTitle>
+                <h5 className="card-category">Last 24 Hours</h5>
+                <CardTitle tag="h4">Daily Stock Analysis</CardTitle>
               </CardHeader>
               <CardBody>
                 <div className="chart-area">
                   <Bar
-                    data={dashboard24HoursPerformanceChart.data}
-                    options={dashboard24HoursPerformanceChart.options}
+                    data={dataDailyStock}
+                    options={optionsDailyStock}
                   />
                 </div>
               </CardBody>
               <CardFooter>
-                <div className="stats">
-                  <i className="now-ui-icons ui-2_time-alarm" /> Last 7 days
+              <div className="stats">
+                  <i className="now-ui-icons arrows-1_refresh-69" /> Just
+                  Updated
                 </div>
               </CardFooter>
             </Card>

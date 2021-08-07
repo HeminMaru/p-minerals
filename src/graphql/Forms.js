@@ -32,6 +32,7 @@ export const Forms = {
         amount
         date
         particular
+        payment_mode
       }
     }
     `,
@@ -40,6 +41,7 @@ export const Forms = {
         amount
         date
         particular
+        payment_mode
       }
     }
     `,
@@ -80,4 +82,18 @@ export const Forms = {
       }
     }
     `,
+    insertPayment: gql `mutation InsertPayment($data: [payments_insert_input!]!) {
+      insert_payments(objects: $data) {
+        returning {
+          amount
+        }
+      }
+    }`,
+    insertReceipt: gql `mutation insertReceipt($data: [receipts_insert_input!]!) {
+      insert_receipts(objects: $data) {
+        returning {
+          amount
+        }
+      }
+    }`,
 }

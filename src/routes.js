@@ -54,13 +54,13 @@ var dashRoutes = [{
         component: Receipts,
         layout: "/admin",
     },
-    {
-        path: "/reciept",
-        name: "Receipts",
-        icon: "files_paper",
-        component: Icons,
-        layout: "/admin",
-    },
+    // {
+    //     path: "/reciept",
+    //     name: "Receipts",
+    //     icon: "files_paper",
+    //     component: UserPage,
+    //     layout: "/admin",
+    // },
     // {
     //     path: "/user-page",
     //     name: "User Profile",
@@ -87,7 +87,7 @@ var dashRoutes = [{
         path: "/logout",
         name: "LOG OUT",
         icon: "media-1_button-power",
-        component: Payments,
+        component: Dashboard,
         layout: "/admin",
     },
 ];
