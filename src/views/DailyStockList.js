@@ -31,18 +31,23 @@ import {
 
 // core components
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
-
+import Cookies from 'js-cookie'
 
 
 function DailyStockList() {
   const [tableContent, setTableContent] = useState([]);
   const [dataChanged, setDataChanged] = useState(false);
   const thead = ["Product", "Net"];
+  const [user, setUser] = useState({});
+
   var loc;
 
   useEffect(() => {
     Apollo.query(Forms.getDailyAnalysis, {}, res => {
       if (res.data.products)  setTableContent(res.data.products);
+    });
+    Apollo.query(Forms.getUsersByUUID, {uuid: Cookies.get("user_uuid")}, res => {
+      if (res.data.users_by_pk) setUser(res.data.users_by_pk);
     });
   }, [dataChanged]);
 
@@ -85,6 +90,11 @@ function DailyStockList() {
                           <td>
                             {prop.net_stock}
                           </td>
+                          {user.role === "ADMIN" &&
+                            <td>
+                            <a className={"now-ui-icons files_box"}/>
+                            </td>
+                          }
                         </tr>
                       );
                     })}

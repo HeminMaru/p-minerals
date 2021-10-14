@@ -16,17 +16,29 @@
 
 */
 /*eslint-disable*/
-import React from "react";
+import React, { useEffect, useState } from 'react';
 import { NavLink } from "react-router-dom";
-import { Nav } from "reactstrap";
+import { Button, Nav } from "reactstrap";
 // javascript plugin used to create scrollbars on windows
 import PerfectScrollbar from "perfect-scrollbar";
 
+import Apollo from "../../Apollo";
+import { Forms, Forms as formsGql } from '../../graphql';
+
 import logo from "../../assets/img/pminerals-logo.png";
+import Cookies from 'js-cookie'
 
 var ps;
 
 function Sidebar(props) {
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    Apollo.query(Forms.getUsersByUUID, {uuid: Cookies.get("user_uuid")}, res => {
+      if (res.data) setUser(res.data.users_by_pk);
+    });
+  }, []);
+
   const sidebar = React.useRef();
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
@@ -45,6 +57,10 @@ function Sidebar(props) {
       }
     };
   });
+  const Logout = () => {
+    Cookies.remove("user_uuid");
+    location.reload();
+  }
   return (
     <div className="sidebar" data-color={props.backgroundColor}>
       <div className="logo">
@@ -88,6 +104,30 @@ function Sidebar(props) {
               </li>
             );
           })}
+          {user.role === "ADMIN" &&
+            <li
+                className={activeRoute("/admin/add-user")}
+            >
+              <NavLink
+                to="/admin/add-user"
+                className="nav-link"
+                activeClassName="active"
+              >
+                <i className="now-ui-icons users_single-02"/>
+                <p>USERS</p>
+              </NavLink>
+            </li>
+          }
+           <li
+                className="active-pro"
+              >
+                <a
+                  onClick={Logout}
+                >
+                  <i className="now-ui-icons media-1_button-power" />
+                  <p>LOGOUT</p>
+                </a>
+              </li>
         </Nav>
       </div>
     </div>

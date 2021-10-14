@@ -15,7 +15,9 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React, { useEffect, useState } from 'react';
+import Apollo from "../../Apollo";
+import { Forms, Forms as formsGql } from '../../graphql';
 import { Link, useLocation } from "react-router-dom";
 import {
   Collapse,
@@ -36,6 +38,7 @@ import {
 } from "reactstrap";
 
 import { dashRoutes } from "routes.js";
+import Cookies from 'js-cookie'
 
 function DemoNavbar(props) {
   const location = useLocation();
@@ -43,6 +46,15 @@ function DemoNavbar(props) {
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const [color, setColor] = React.useState("transparent");
   const sidebarToggle = React.useRef();
+  const [user, setUser] = useState({});
+
+  
+  useEffect(()=>{
+    Apollo.query(Forms.getUsersByUUID, {uuid: Cookies.get("user_uuid")}, res => {
+      if (res.data) setUser(res.data.users_by_pk);
+    });
+  },[]);
+
   const toggle = () => {
     if (isOpen) {
       setColor("transparent");
@@ -140,17 +152,11 @@ function DemoNavbar(props) {
           <span className="navbar-toggler-bar navbar-kebab" />
           <span className="navbar-toggler-bar navbar-kebab" />
         </NavbarToggler>
+        {(user.role === "ADMIN" || user.role === "SUPERVISOR" || user.role === "USER") &&
+        <h1>{user.role} : {user.username}</h1>
+        }
         <Collapse isOpen={isOpen} navbar className="justify-content-end">
-          <form>
-            <InputGroup className="no-border">
-              <Input placeholder="Search..." />
-              <InputGroupAddon addonType="append">
-                <InputGroupText>
-                  <i className="now-ui-icons ui-1_zoom-bold" />
-                </InputGroupText>
-              </InputGroupAddon>
-            </InputGroup>
-          </form>
+        
           <Nav navbar>
             <NavItem>
               <Link to="#pablo" className="nav-link">

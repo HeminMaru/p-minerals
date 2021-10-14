@@ -23,8 +23,7 @@ import PanelHeader from "components/PanelHeader/PanelHeader.js";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { data } from 'jquery';
-
+import Cookies from 'js-cookie'
 
 
 function ProductDailyStock() {
@@ -36,7 +35,7 @@ function ProductDailyStock() {
   const theadConsumption = ["Date", "Updated By", "consumption"];
   const [transaction, setTransaction] = useState("")
   const [value, setValue] = useState("")
-
+  const [user, setUser] = useState({});
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -44,11 +43,15 @@ function ProductDailyStock() {
   var parseValue;
 
 
+
+
   const getData = () => {
     Apollo.query(Forms.getProductDailyAnalysis, {uuid: uuid}, res => {
-      if (res.data.products_by_pk) setTableContent(res.data.products_by_pk);
+      if (res.data) setTableContent(res.data.products_by_pk);
     });
-    console.log("fetched")
+    Apollo.query(Forms.getUsersByUUID, {uuid: Cookies.get("user_uuid")}, res => {
+      if (res.data) setUser(res.data.users_by_pk);
+    });
   };
    useEffect(getData,[dataChanged]);
 
@@ -126,9 +129,11 @@ function ProductDailyStock() {
               <td>
                 {prop.inward_stock}
               </td>
+              {user.role === "ADMIN" &&
               <td>
               <a className={"now-ui-icons files_box"} onClick={delItem("inward",prop.uuid)}/>
               </td>
+        }
             </tr>
           );
         })
@@ -147,9 +152,11 @@ function ProductDailyStock() {
               <td>
                 {prop.stock_consumption}
               </td>
+              {user.role === "ADMIN" &&
               <td>
               <a className={"now-ui-icons files_box"} onClick={delItem("consumption",prop.uuid)}/>
               </td>
+              }
             </tr>
           );
         })
@@ -167,6 +174,8 @@ function ProductDailyStock() {
             <Card>
               <CardHeader>
                 <CardTitle tag="h4">Inwards</CardTitle>
+                {(user.role === "ADMIN"||user.role === "SUPERVISOR") &&
+                <div>
                 <label>Inward Stocks</label>
                 <Input
                   id="InwardStockInput"
@@ -182,6 +191,8 @@ function ProductDailyStock() {
                     <Button className="btn btn-primary" onClick={handleInwardSubmit}>ADD</Button>
                   </Col>
                 </Row>
+                </div>
+              }
               </CardHeader>
               <CardBody>
                 <Table responsive>
@@ -209,6 +220,8 @@ function ProductDailyStock() {
             <Card>
               <CardHeader>
                 <CardTitle tag="h4">Consumption</CardTitle>
+                {(user.role === "ADMIN" || user.role === "SUPERVISOR") &&
+                <div>
                 <Form>
                 <label>Consumption Stocks</label>
                         <Input
@@ -226,6 +239,8 @@ function ProductDailyStock() {
                     <Button className="btn btn-primary" onClick={handleconsumptionSubmit}>CONSUME</Button>
                   </Col>
                 </Row>
+                </div>
+                }
               </CardHeader>
               <CardBody>
                 <Table responsive>
@@ -263,7 +278,7 @@ function ProductDailyStock() {
           <Modal.Body>
             <div className="typography-line">
               <h6>
-                <span>Added By</span>Hemin{" "}
+                <span>Added By</span>{user.username}
               </h6>
               </div>
               <div className="typography-line">

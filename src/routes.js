@@ -21,10 +21,12 @@ import Icons from "views/Icons.js";
 import Typography from "views/Typography.js";
 import DailyStockList from "views/DailyStockList";
 import UserPage from "views/UserPage.js";
-
-import ProductDailyStock from "./views/ProductDailyStock";
+import Login from "views/Login.js"
+import ProductDailyStock from "views/ProductDailyStock";
 import Payments from "views/Payments";
 import Receipts from "views/Receipts";
+import AddUser from "views/AddUser";
+import Logout from "views/Logout";
 
 var dashRoutes = [{
         path: "/dashboard",
@@ -82,20 +84,28 @@ var dashRoutes = [{
     //     component: Notifications,
     //     layout: "/admin",
     // },
+
+    // {
+    //     pro: true,
+    //     path: "/logout",
+    //     name: "LOG OUT",
+    //     icon: "media-1_button-power",
+    //     component: Dashboard,
+    //     layout: "/admin",
+    // },
+];
+
+var subRoutes = [{
+        path: "/daily-stock/:product_uuid",
+        component: ProductDailyStock,
+        layout: "/admin"
+    },
     {
-        pro: true,
-        path: "/logout",
-        name: "LOG OUT",
-        icon: "media-1_button-power",
-        component: Dashboard,
+        path: "/add-user",
+        component: AddUser,
         layout: "/admin",
     },
 ];
 
-var routes = [{
-    path: "/daily-stock/:product_uuid",
-    component: ProductDailyStock,
-    layout: "/admin"
-}];
 
-export { dashRoutes, routes };
+export { dashRoutes, subRoutes };

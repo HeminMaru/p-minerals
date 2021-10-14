@@ -23,12 +23,14 @@ import {Modal} from "react-bootstrap";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 import Cookies from 'js-cookie'
 
-function Payments() {
+
+function Receipts() {
   const [tableContent, setTableContent] = useState([]);
   const [dataChanged, setDataChanged] = useState(false);
-  const thead = ["Date", "Particular", "Payment Mode", "Amount"];
+  const thead = ["Sr.No", "Username", "Password", "Role"];
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -37,23 +39,23 @@ function Payments() {
   const [showReview, setShowReview] = useState(false);
   const handleCloseReview = () => {
     setShowReview(false);
-    setPMode();
-    setParticular();
-    setAmount();
-    setConfirmAmount();
+    setRole();
+    setPassword();
+    setUsername();
   }
   const handleShowReview = () => setShowReview(true);
 
-  const [pMode, setPMode] = useState()
-  const [particular, setParticular] = useState()
-  const [amount, setAmount] = useState()
-  const [confirmAmount, setConfirmAmount] = useState()
+  const [role, setRole] = useState()
+  const [username, setUsername] = useState()
+  const [password, setPassword] = useState()
+
   const [user, setUser] = useState({});
-  var loc, pModes = [undefined,"Cash", "Bank"];
+
+  var loc, roles = [undefined, "ADMIN", "SUPERVISOR", "USER"];
 
   useEffect(() => {
-    Apollo.query(Forms.getPaymentDetails, {}, res => {
-      if (res.data)  setTableContent(res.data.payments);
+    Apollo.query(Forms.getUsers, {}, res => {
+      if (res.data.users)  setTableContent(res.data.users);
     });
     Apollo.query(Forms.getUsersByUUID, {uuid: Cookies.get("user_uuid")}, res => {
       if (res.data) setUser(res.data.users_by_pk);
@@ -61,24 +63,29 @@ function Payments() {
   }, [dataChanged]);
 
   const handleReview = () => {
-    console.log(confirmAmount);
-    if (!pMode || !particular || !amount) {
+    if (!roles || !username || !password) {
       toast("Some Fields are empty!");
-    } else if (amount != confirmAmount) {
-      toast("Amount doesn't match");
-    }
-    else {
+    } else {
       handleClose();
       handleShowReview();
     }
   }
 
   const handleSubmit = () => {
-    Apollo.mutate(Forms.insertPayment, {data: {particular: particular, amount: amount, payment_mode: pMode}}, res => {
-      toast("Payment of Amount Rs." + res.data.insert_payments.returning[0].amount + " added Successfully!");
+    Apollo.mutate(Forms.insertUser, {data: {username: username, password: password, role: role}}, res => {
+      toast("User with UUID " + res.data.insert_users.returning[0].UUID + " added Successfully!");
       handleCloseReview();
+      setDataChanged(!dataChanged);
     });
   }
+
+  const handleDelete = (user_uuid)=> e => {
+    Apollo.mutate(Forms.deleteUser, {user_uuid: user_uuid}, res => {
+      toast("User with UUID " + res.data.delete_users_by_pk.UUID + " Deleted Successfully!");
+      setDataChanged(!dataChanged);
+    });
+  }
+
 
   if (tableContent)
   return (
@@ -89,16 +96,16 @@ function Payments() {
         <Row>
           <Col xs={12}>
             <Card>
+            {user.role === "ADMIN" &&
+            <div>
               <CardHeader>
-              <Row>
+                <Row>
                   <Col xs={9}>
-                <CardTitle tag="h4">PAYMENTS</CardTitle>
+                <CardTitle tag="h4">Users</CardTitle>
                 </Col><Col xs={3}>
-                {(user.role === "ADMIN" || user.role === "SUPERVISOR") &&
-                <Button className="btn btn-primary float-right" onClick={handleShow}>ADD PAYMENT</Button>
-                }
+                <Button className="btn btn-primary float-right" onClick={handleShow}>ADD NEW USER</Button>
                 </Col>
-                </Row>    
+                </Row>
               </CardHeader>
               <CardBody>
                 <Table responsive>
@@ -120,16 +127,19 @@ function Payments() {
                       return (
                         <tr key={key}>
                           <td>
-                              {prop.date}
-                          </td>
-                          <td style={"width : 30%"}>
-                            {prop.particular}
+                              {prop.UUID}
                           </td>
                           <td>
-                            {prop.payment_mode}
+                            {prop.username}
                           </td>
                           <td>
-                            Rs.{prop.amount}
+                            {prop.password}
+                          </td>
+                          <td>
+                            {prop.role}
+                          </td>
+                          <td>
+                            <a onClick={handleDelete(prop.UUID)} className={"now-ui-icons files_box"}/>
                           </td>
                         </tr>
                       );
@@ -137,7 +147,18 @@ function Payments() {
                   </tbody>
                 </Table>
               </CardBody>
+              </div>
+              }
+              {user.role === "USER" &&
+              <div className="text-center">
+              <br/>
+              <br/>
+              <h1>You Dont have Access To This Page.</h1>
+              <h3>Contact Admin!</h3>
+              </div>
+              }
             </Card>
+          
           </Col>
         </Row>
         <Modal
@@ -148,65 +169,49 @@ function Payments() {
           keyboard={false}
         >
           <Modal.Header closeButton>
-            <Modal.Title>Add New Payment</Modal.Title>
+            <Modal.Title>New User</Modal.Title>
           </Modal.Header>
           <Modal.Body>
           <Form>
             <Row>
               <Col>
                 <FormGroup>
-                  <label>Added By</label>
+                  <label>Username</label>
                   <Input
-                  defaultValue="Anonymous"
-                  disabled
-                  placeholder="Anonymous"
+                  placeholder="Username"
                   type="text"
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                  }}
                   />
                 </FormGroup>
                 </Col>
                 <Col>
                 <FormGroup>
-                  <Label for="PaymentMode">Payment Mode</Label>
-                  <Input type="select" name="select" id="PaymentMode" onChange={(e)=> {setPMode(pModes[e.target.selectedIndex])}}>
-                    <option>Select</option>
-                    <option>Cash</option>
-                    <option>Bank</option>
-                  </Input>
-                </FormGroup>
-                </Col>
-            </Row>
-            <Row>
-              <FormGroup>
-                <label>Particular</label>
+                <label>Password</label>
                 <Input
-                  cols="80"
-                  placeholder="Enter Particular Here"
-                  rows="4"
-                  type="textarea"
+                  placeholder="Password"
+                  type="text"
                   onChange={(e) => {
-                    setParticular(e.target.value);
+                    setPassword(e.target.value);
                   }}
                 />
               </FormGroup>
+                
+                </Col>
             </Row>
             <Row>
-              <Col>
-              <FormGroup>
-                <Label for="Amount">Amount</Label>
-                <Input type="text" onChange={(e) => {
-                    setAmount(parseInt(e.target.value));
-                  }} id="Amount" placeholder="Enter Amount" />
-              </FormGroup>
-              </Col>
-                <Col>
-              <FormGroup>
-                <Label for="confirmAmount">Confirm Amount</Label>
-                <Input type="text" onChange={(e) => {
-                    setConfirmAmount(parseInt(e.target.value));
-                  }} id="confirmAmount" placeholder="Confirm Amount" />
-              </FormGroup>
-              </Col>
+            <FormGroup>
+                  <Label for="role">Role</Label>
+                  <Input type="select" name="select" id="role" onChange={(e)=> {setRole(roles[e.target.selectedIndex])}}>
+                    <option>Select</option>
+                    <option>ADMIN</option>
+                    <option>SUPERVISOR</option>
+                    <option>USER</option>
+                  </Input>
+                </FormGroup>
             </Row>
+            
           </Form>
           </Modal.Body>
           <Modal.Footer>
@@ -226,41 +231,35 @@ function Payments() {
           keyboard={false}
         >
           <Modal.Header closeButton>
-            <Modal.Title>Review</Modal.Title>
+            <Modal.Title>New User</Modal.Title>
           </Modal.Header>
           <Modal.Body>
           <div className="typography-line">
               <h6>
-                <span>Added By</span>Hemin{" "}
+                <span>Username</span>{username}
               </h6>
               </div>
               <div className="typography-line">
               <h6>
-                <span>Payment Mode</span>{pMode}
+                <span>Password</span>{password}
               </h6>
               </div>
               <div className="typography-line">
               <h6>
-                <span>Particular</span>{particular}
-              </h6>
-            </div>
-            <div className="typography-line">
-              <h6>
-                <span>Amount</span>{amount}
+                <span>Role</span>{role}
               </h6>
             </div>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleCloseReview}>
-              Cancel Transaction
+              Cancel
             </Button>
-            <Button variant="primary" onClick={handleSubmit}>Confirm</Button>
+            <Button variant="primary" onClick={handleSubmit}>ADD</Button>
           </Modal.Footer>
         </Modal>
-        
       </div>
     </>
   );
 }
 
-export default Payments;
+export default Receipts;

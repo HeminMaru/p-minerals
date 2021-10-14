@@ -96,4 +96,37 @@ export const Forms = {
         }
       }
     }`,
+    insertUser: gql `mutation InsertUser($data: [users_insert_input!]!) {
+      insert_users(objects: $data) {
+        returning {
+          UUID
+        }
+      }
+    }`,
+    getUsers: gql `query GetUsers {
+      users {
+        UUID
+        password
+        role
+        username
+      }
+    }
+    `,
+    getUserByUsernamePass: gql `query GetUserByUsernamePass($username: String,$password: String) {
+      users(where: {username: {_eq: $username}, password: {_eq: $password}}) {
+        UUID
+      }
+    }`,
+    getUsersByUUID: gql `query GetUsersByUUID($uuid: uuid!) {
+      users_by_pk(UUID: $uuid) {
+        role
+        username
+      }
+    }`,
+    deleteUser: gql `mutation DeleteUser($user_uuid: uuid!) {
+      delete_users_by_pk(UUID: $user_uuid) {
+        UUID
+      }
+    }
+    `
 }

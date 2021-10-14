@@ -28,7 +28,10 @@ import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
 
-import {dashRoutes,routes} from "routes.js";
+import Switchs from "../Auth"
+
+import {dashRoutes} from "routes.js";
+
 
 var ps;
 
@@ -56,36 +59,16 @@ function Admin(props) {
   const handleColorClick = (color) => {
     setBackgroundColor(color);
   };
-  console.log(routes);
+
+
   return (
     <div className="wrapper">
       <Sidebar {...props} routes={dashRoutes} backgroundColor={backgroundColor} />
       <div className="main-panel" ref={mainPanel}>
         <DemoNavbar {...props} />
-        <Switch>
-          {dashRoutes.map((prop, key) => {
-            return (
-              <Route
-                path={prop.layout + prop.path}
-                component={prop.component}
-                key={key}
-              />
-            );
-          })}
-          {routes.map((prop, key) => {
-            return (
-              <Route
-                path={prop.layout + prop.path}
-                component={prop.component}
-                key={key}
-              />
-            );
-          })}
-          <Redirect from="/admin" to="/admin/dashboard" />
-        </Switch>
+        <Switchs/>
         <Footer fluid />
       </div>
-      
     </div>
   );
 }

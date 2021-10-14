@@ -23,16 +23,18 @@ import {Modal} from "react-bootstrap";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Cookies from 'js-cookie'
 
 
 function Receipts() {
   const [tableContent, setTableContent] = useState([]);
   const [dataChanged, setDataChanged] = useState(false);
   const thead = ["Date", "Particular", "Payment Mode", "Amount"];
-
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [user, setUser] = useState({});
+
 
   const [showReview, setShowReview] = useState(false);
   const handleCloseReview = () => {
@@ -53,7 +55,10 @@ function Receipts() {
 
   useEffect(() => {
     Apollo.query(Forms.getReceiptDetails, {}, res => {
-      if (res.data.receipts)  setTableContent(res.data.receipts);
+      if (res.data)  setTableContent(res.data.receipts);
+    });
+    Apollo.query(Forms.getUsersByUUID, {uuid: Cookies.get("user_uuid")}, res => {
+      if (res.data) setUser(res.data.users_by_pk);
     });
   }, [dataChanged]);
 
@@ -91,7 +96,9 @@ function Receipts() {
                   <Col xs={9}>
                 <CardTitle tag="h4">RECEIPTS</CardTitle>
                 </Col><Col xs={3}>
+                {(user.role === "ADMIN" || user.role === "SUPERVISOR") &&
                 <Button className="btn btn-primary float-right" onClick={handleShow}>ADD RECEIPT</Button>
+                }
                 </Col>
                 </Row>
               </CardHeader>
@@ -117,14 +124,14 @@ function Receipts() {
                           <td>
                               {prop.date}
                           </td>
-                          <td>
+                          <td width="30" height="10">
                             {prop.particular}
                           </td>
                           <td>
                             {prop.payment_mode}
                           </td>
                           <td>
-                            {prop.amount}
+                            Rs.{prop.amount}
                           </td>
                         </tr>
                       );
