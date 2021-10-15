@@ -108,7 +108,7 @@ function Receipts() {
                 </Row>
               </CardHeader>
               <CardBody>
-                <Table responsive>
+                <Table responsive hover>
                   <thead className="text-primary">
                     <tr>
                       {thead.map((prop, key) => {

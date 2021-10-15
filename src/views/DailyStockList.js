@@ -64,7 +64,7 @@ function DailyStockList() {
                 <CardTitle tag="h4">Daily Stock Analysis</CardTitle>
               </CardHeader>
               <CardBody>
-                <Table responsive>
+                <Table responsive hover>
                   <thead className="text-primary">
                     <tr>
                       {thead.map((prop, key) => {
@@ -83,7 +83,7 @@ function DailyStockList() {
                       return (
                         <tr key={key}>
                           <td>
-                            <a href={"/admin/daily-stock/"+prop.uuid}>
+                            <a style={{"textDecoration":"none"}} href={"/admin/daily-stock/"+prop.uuid}>
                               {prop.product_name}
                             </a>
                           </td>

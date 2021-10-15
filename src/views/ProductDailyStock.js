@@ -195,7 +195,7 @@ function ProductDailyStock() {
               }
               </CardHeader>
               <CardBody>
-                <Table responsive>
+                <Table responsive hover>
                   <thead className="text-primary">
                     <tr>
                       {theadInwards.map((prop, key) => {
@@ -243,7 +243,7 @@ function ProductDailyStock() {
                 }
               </CardHeader>
               <CardBody>
-                <Table responsive>
+                <Table responsive hover>
                   <thead className="text-primary">
                     <tr>
                       {theadConsumption.map((prop, key) => {
@@ -278,7 +278,7 @@ function ProductDailyStock() {
           <Modal.Body>
             <div className="typography-line">
               <h6>
-                <span>Added By</span>{user.username}
+                <span>Added By</span>{user.username + " "}
               </h6>
               </div>
               <div className="typography-line">

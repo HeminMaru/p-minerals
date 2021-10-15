@@ -29,7 +29,7 @@ import Cookies from 'js-cookie'
 function Receipts() {
   const [tableContent, setTableContent] = useState([]);
   const [dataChanged, setDataChanged] = useState(false);
-  const thead = ["Date", "Particular", "Payment Mode", "Amount"];
+  const thead = ["Date", "Added by", "Particular", "Payment Mode", "Amount"];
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -43,6 +43,7 @@ function Receipts() {
     setParticular();
     setAmount();
     setConfirmAmount();
+    setDataChanged(!dataChanged);
   }
   const handleShowReview = () => setShowReview(true);
 
@@ -76,11 +77,18 @@ function Receipts() {
   }
 
   const handleSubmit = () => {
-    Apollo.mutate(Forms.insertReceipt, {data: {particular: particular, amount: amount, payment_mode: pMode}}, res => {
+    Apollo.mutate(Forms.insertReceipt, {data: {particular: particular, amount: amount, payment_mode: pMode, added_by: user.username}}, res => {
       toast("Receipt of Amount Rs." + res.data.insert_receipts.returning[0].amount + " added Successfully!");
       handleCloseReview();
     });
   }
+
+  const delItem = (receipt_uuid) => e =>{
+    Apollo.mutate(Forms.delReceipt, {receipt_uuid: receipt_uuid}, res => {
+      toast("Receipt "+res.data.delete_receipts_by_pk.uuid+" deleted!");
+      setDataChanged(!dataChanged);
+    });
+}
 
   if (tableContent)
   return (
@@ -103,7 +111,7 @@ function Receipts() {
                 </Row>
               </CardHeader>
               <CardBody>
-                <Table responsive>
+                <Table responsive hover>
                   <thead className="text-primary">
                     <tr>
                       {thead.map((prop, key) => {
@@ -120,12 +128,17 @@ function Receipts() {
                   <tbody>
                     {tableContent.map((prop, key) => {
                       return (
-                        <tr key={key}>
-                          <td>
+                        <tr key={key} >
+                          <td className="date">
                               {prop.date}
                           </td>
-                          <td width="30" height="10">
+                          <td>
+                            {prop.added_by}
+                          </td>
+                          <td>
+                            <div>
                             {prop.particular}
+                            </div>
                           </td>
                           <td>
                             {prop.payment_mode}
@@ -133,6 +146,11 @@ function Receipts() {
                           <td>
                             Rs.{prop.amount}
                           </td>
+                          {user.role === "ADMIN" &&
+                            <td>
+                              <a className={"now-ui-icons files_box"} onClick={delItem(prop.uuid)}/>
+                            </td>
+                          }
                         </tr>
                       );
                     })}
@@ -159,9 +177,9 @@ function Receipts() {
                 <FormGroup>
                   <label>Added By</label>
                   <Input
-                  defaultValue="Anonymous"
+                  defaultValue={user.username}
                   disabled
-                  placeholder="Anonymous"
+                  placeholder="Added By"
                   type="text"
                   />
                 </FormGroup>
@@ -233,12 +251,12 @@ function Receipts() {
           <Modal.Body>
           <div className="typography-line">
               <h6>
-                <span>Added By</span>Hemin{" "}
+                <span>Added By</span>{user.username + " "}
               </h6>
               </div>
               <div className="typography-line">
               <h6>
-                <span>Reciept Payment Mode</span>{pMode}
+                <span>Payment Mode</span>{pMode}
               </h6>
               </div>
               <div className="typography-line">

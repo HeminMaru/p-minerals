@@ -28,7 +28,7 @@ import Cookies from 'js-cookie'
 function Payments() {
   const [tableContent, setTableContent] = useState([]);
   const [dataChanged, setDataChanged] = useState(false);
-  const thead = ["Date", "Particular", "Payment Mode", "Amount"];
+  const thead = ["Date", "Added By", "Particular", "Payment Mode", "Amount"];
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -41,6 +41,7 @@ function Payments() {
     setParticular();
     setAmount();
     setConfirmAmount();
+    setDataChanged(!dataChanged);
   }
   const handleShowReview = () => setShowReview(true);
 
@@ -74,11 +75,18 @@ function Payments() {
   }
 
   const handleSubmit = () => {
-    Apollo.mutate(Forms.insertPayment, {data: {particular: particular, amount: amount, payment_mode: pMode}}, res => {
+    Apollo.mutate(Forms.insertPayment, {data: {particular: particular, amount: amount, payment_mode: pMode, added_by: user.username}}, res => {
       toast("Payment of Amount Rs." + res.data.insert_payments.returning[0].amount + " added Successfully!");
       handleCloseReview();
     });
   }
+
+  const delItem = (payment_uuid) => e =>{
+        Apollo.mutate(Forms.delPayment, {payment_uuid: payment_uuid}, res => {
+          toast("Payment "+res.data.delete_payments_by_pk.uuid+" deleted!");
+          setDataChanged(!dataChanged);
+        });
+    }
 
   if (tableContent)
   return (
@@ -101,7 +109,7 @@ function Payments() {
                 </Row>    
               </CardHeader>
               <CardBody>
-                <Table responsive>
+                <Table responsive hover>
                   <thead className="text-primary">
                     <tr>
                       {thead.map((prop, key) => {
@@ -119,10 +127,13 @@ function Payments() {
                     {tableContent.map((prop, key) => {
                       return (
                         <tr key={key}>
-                          <td>
+                          <td className="date">
                               {prop.date}
                           </td>
-                          <td style={"width : 30%"}>
+                          <td>
+                            {prop.added_by}
+                          </td>
+                          <td>
                             {prop.particular}
                           </td>
                           <td>
@@ -131,6 +142,11 @@ function Payments() {
                           <td>
                             Rs.{prop.amount}
                           </td>
+                          {user.role === "ADMIN" &&
+                            <td>
+                              <a className={"now-ui-icons files_box"} onClick={delItem(prop.uuid)}/>
+                            </td>
+                          }
                         </tr>
                       );
                     })}
@@ -157,7 +173,7 @@ function Payments() {
                 <FormGroup>
                   <label>Added By</label>
                   <Input
-                  defaultValue="Anonymous"
+                  defaultValue={user.username}
                   disabled
                   placeholder="Anonymous"
                   type="text"
@@ -231,7 +247,7 @@ function Payments() {
           <Modal.Body>
           <div className="typography-line">
               <h6>
-                <span>Added By</span>Hemin{" "}
+                <span>Added By</span>{user.username + " "}
               </h6>
               </div>
               <div className="typography-line">

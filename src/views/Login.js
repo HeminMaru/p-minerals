@@ -43,6 +43,7 @@ function Receipts() {
       if (res.data.users[0]){
           Auth.SetAuth(true);
           Cookies.set('user_uuid', res.data.users[0].UUID);
+          location.reload();
       } else toast("Invalid Credentials!");
     });
     

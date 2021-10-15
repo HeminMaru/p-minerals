@@ -29,6 +29,8 @@ export const Forms = {
     `,
     getPaymentDetails: gql `query MyQuery {
       payments {
+        added_by
+        uuid
         amount
         date
         particular
@@ -36,12 +38,26 @@ export const Forms = {
       }
     }
     `,
+    delPayment: gql `mutation DelPayment($payment_uuid: uuid!) {
+      delete_payments_by_pk(uuid: $payment_uuid) {
+        uuid
+      }
+    }
+    `,
     getReceiptDetails: gql `query MyQuery {
       receipts {
+        added_by
+        uuid
         amount
         date
         particular
         payment_mode
+      }
+    }
+    `,
+    delReceipt: gql `mutation DelReceipt($receipt_uuid: uuid!) {
+      delete_receipts_by_pk(uuid: $receipt_uuid) {
+        uuid
       }
     }
     `,
