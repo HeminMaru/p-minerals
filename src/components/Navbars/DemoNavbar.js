@@ -35,17 +35,18 @@ import {
   InputGroupText,
   InputGroupAddon,
   Input,
+  Button,
 } from "reactstrap";
 
 import { dashRoutes } from "routes.js";
 import Cookies from 'js-cookie'
+import logo from "../../assets/img/pminerals-logo.png";
 
 function DemoNavbar(props) {
   const location = useLocation();
   const [isOpen, setIsOpen] = React.useState(false);
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
-  const [color, setColor] = React.useState("transparent");
-  const sidebarToggle = React.useRef();
+  const [color, setColor] = React.useState("info");
   const [user, setUser] = useState({});
 
   
@@ -57,7 +58,7 @@ function DemoNavbar(props) {
 
   const toggle = () => {
     if (isOpen) {
-      setColor("transparent");
+      setColor("info");
     } else {
       setColor("white");
     }
@@ -91,16 +92,12 @@ function DemoNavbar(props) {
     });
     return name;
   };
-  const openSidebar = () => {
-    document.documentElement.classList.toggle("nav-open");
-    sidebarToggle.current.classList.toggle("toggled");
-  };
   // function that adds color white/transparent to the navbar on resize (this is for the collapse)
   const updateColor = () => {
     if (window.innerWidth < 993 && isOpen) {
       setColor("white");
     } else {
-      setColor("transparent");
+      setColor("info");
     }
   };
   React.useEffect(() => {
@@ -115,9 +112,14 @@ function DemoNavbar(props) {
       sidebarToggle.current.classList.toggle("toggled");
     }
   }, [location]);
+
+  const Logout = () => {
+    Cookies.remove("user_uuid");
+  }
+
   return (
     // add or remove classes depending if we are on full-screen-maps page or not
-    <Navbar
+    <Navbar 
       color={
         props.location.pathname.indexOf("full-screen-maps") !== -1
           ? "white"
@@ -131,42 +133,61 @@ function DemoNavbar(props) {
             (color === "transparent" ? "navbar-transparent " : "")
       }
     >
-      <Container fluid>
-        <div className="navbar-wrapper">
-          <div className="navbar-toggle">
-            <button
-              type="button"
-              ref={sidebarToggle}
-              className="navbar-toggler"
-              onClick={() => openSidebar()}
-            >
-              <span className="navbar-toggler-bar bar1" />
-              <span className="navbar-toggler-bar bar2" />
-              <span className="navbar-toggler-bar bar3" />
-            </button>
+      <Container>
+      <div className="logo">
+          <div className="logo-img">
+            <img src={logo} width="30px" alt="p-minerals-logo" />
+            <p style={{margin:"20px", fontSize:"20px"}}>Pragathi Minerals</p>
           </div>
-          <NavbarBrand href="/">{getBrand()}</NavbarBrand>
+      </div>
+      <div style={{margin:"auto"}}>
+        {(user.role === "ADMIN" || user.role === "SUPERVISOR" || user.role === "USER") &&
+        <p style={{color:"white"}}>{user.role} : {user.username}</p>
+        }
         </div>
         <NavbarToggler onClick={toggle}>
           <span className="navbar-toggler-bar navbar-kebab" />
           <span className="navbar-toggler-bar navbar-kebab" />
           <span className="navbar-toggler-bar navbar-kebab" />
         </NavbarToggler>
-        {(user.role === "ADMIN" || user.role === "SUPERVISOR" || user.role === "USER") &&
-        <h1>{user.role} : {user.username}</h1>
-        }
         <Collapse isOpen={isOpen} navbar className="justify-content-end">
-        
           <Nav navbar>
-            <NavItem>
-              <Link to="#pablo" className="nav-link">
-                <i className="now-ui-icons media-2_sound-wave" />
+          <NavItem className="nav-item">
+              <Link to="/admin/daily-stocks" className="nav-link">
+                <i className="now-ui-icons business_chart-bar-32" />
                 <p>
-                  <span className="d-lg-none d-md-block">Stats</span>
+                  <span className="d-lg-none d-md-block">Daily Stocks</span>
                 </p>
               </Link>
             </NavItem>
-            <Dropdown
+            <NavItem className="nav-item">
+              <Link to="/admin/payments" className="nav-link">
+                <i className="now-ui-icons business_money-coins" />
+                <p>
+                  <span className="d-lg-none d-md-block">Payments</span>
+                </p>
+              </Link>
+            </NavItem>
+            <NavItem className="nav-item">
+              <Link to="/admin/reciepts" className="nav-link">
+                <i className="now-ui-icons files_paper" />
+                <p>
+                  <span className="d-lg-none d-md-block">Receipts</span>
+                </p>
+              </Link>
+            </NavItem>
+            {user.role === "ADMIN" &&
+            <NavItem className="nav-item">
+            <Link to="/admin/add-user" className="nav-link">
+              <i className="now-ui-icons users_single-02" />
+              <p>
+                <span className="d-lg-none d-md-block">ADD USERS</span>
+              </p>
+            </Link>
+          </NavItem>
+}
+            <Button onClick={Logout}> LOGOUT</Button>
+            {/* <Dropdown
               nav
               isOpen={dropdownOpen}
               toggle={(e) => dropdownToggle(e)}
@@ -182,15 +203,7 @@ function DemoNavbar(props) {
                 <DropdownItem tag="a">Another Action</DropdownItem>
                 <DropdownItem tag="a">Something else here</DropdownItem>
               </DropdownMenu>
-            </Dropdown>
-            <NavItem>
-              <Link to="#pablo" className="nav-link">
-                <i className="now-ui-icons users_single-02" />
-                <p>
-                  <span className="d-lg-none d-md-block">Account</span>
-                </p>
-              </Link>
-            </NavItem>
+            </Dropdown> */}
           </Nav>
         </Collapse>
       </Container>

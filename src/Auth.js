@@ -37,7 +37,7 @@ function Switchs() {
                 <Component/>
             ):(
             <div>
-                <Redirect to="/admin/dashboard"/>
+                <Redirect to="/admin/daily-stocks"/>
             </div>
         )}/>
     )};
@@ -70,7 +70,7 @@ function Switchs() {
                 path="/admin/login"
                 component={Login}
               />
-          <Redirect from="/admin" to="/admin/dashboard" />
+          <Redirect from="/admin" to="/admin/daily-stocks" />
         </Switch>
     </div>)
     }

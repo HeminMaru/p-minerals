@@ -63,7 +63,6 @@ function Admin(props) {
 
   return (
     <div className="wrapper">
-      <Sidebar {...props} routes={dashRoutes} backgroundColor={backgroundColor} />
       <div className="main-panel" ref={mainPanel}>
         <DemoNavbar {...props} />
         <Switchs/>

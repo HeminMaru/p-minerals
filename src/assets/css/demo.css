@@ -16,6 +16,41 @@
 
 */
 
+.nav-item {
+    margin-top: 10px;
+}
+
+.sub-mainpanel {
+    position: relative;
+    float: right;
+    background-color: #E3E3E3;
+    background-color: #ebecf1;
+    -webkit-transition: all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);
+    -moz-transition: all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);
+    -o-transition: all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);
+    -ms-transition: all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);
+    transition: all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);
+}
+
+.sub-mainpanel div>.content {
+    padding: 0 30px 30px;
+    min-height: calc(100vh - 123px);
+    margin-top: -30px;
+}
+
+.sub-mainpanel>.navbar {
+    margin-bottom: 0;
+}
+
+.sub-mainpanel .header {
+    margin-bottom: 50px;
+}
+
+.perfect-scrollbar-on .sub-mainpanel {
+    height: 100%;
+    max-height: 100%;
+}
+
 .date {
     width: 12%;
 }

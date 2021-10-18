@@ -28,13 +28,14 @@ import Receipts from "views/Receipts";
 import AddUser from "views/AddUser";
 import Logout from "views/Logout";
 
-var dashRoutes = [{
-        path: "/dashboard",
-        name: "Dashboard",
-        icon: "design_app",
-        component: Dashboard,
-        layout: "/admin",
-    },
+var dashRoutes = [
+    //     {
+    //         path: "/dashboard",
+    //         name: "Dashboard",
+    //         icon: "design_app",
+    //         component: Dashboard,
+    //         layout: "/admin",
+    //     },
     {
         path: "/daily-stocks",
         name: "Daily Stocks",
