@@ -42,9 +42,6 @@ function ProductDailyStock() {
  
   var parseValue;
 
-
-
-
   const getData = () => {
     Apollo.query(Forms.getProductDailyAnalysis, {uuid: uuid}, res => {
       if (res.data) setTableContent(res.data.products_by_pk);
@@ -78,7 +75,7 @@ function ProductDailyStock() {
   const handleConfirmationSubmit = () => {
     if(transaction === "Inward Stock") {
       Apollo.mutate(Forms.insertStockInwards, {data:{product_uuid: uuid, inward_stock: parseInt(value)}}, res =>{
-        Apollo.mutate(Forms.updateProductDetail, {uuid: uuid, data: {net_stock: tableContent.net_stock+parseInt(value)}}, res => {
+        Apollo.mutate(Forms.updateProductDetail, {uuid: uuid, data: {net_stock: tableContent.remaining_stock+parseInt(value)}}, res => {
           toast("Net Stock of Product: "+res.data.update_products_by_pk.net_stock);
           setDataChanged(!dataChanged);
         });      
@@ -86,7 +83,7 @@ function ProductDailyStock() {
       
     } else if(transaction === "Consumption") {
       Apollo.mutate(Forms.insertStockConsumption, {data:{product_uuid: uuid, stock_consumption: parseInt(value)}}, res =>{
-        Apollo.mutate(Forms.updateProductDetail, {uuid: uuid, data: {net_stock: tableContent.net_stock-parseInt(value)}}, res => {
+        Apollo.mutate(Forms.updateProductDetail, {uuid: uuid, data: {net_stock: tableContent.remaining_stock-parseInt(value)}}, res => {
           toast("Net Stock of Product: "+res.data.update_products_by_pk.net_stock);
           setDataChanged(!dataChanged);
         });       

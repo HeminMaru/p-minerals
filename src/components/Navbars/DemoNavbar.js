@@ -43,7 +43,7 @@ import Cookies from 'js-cookie'
 import logo from "../../assets/img/pminerals-logo.png";
 
 function DemoNavbar(props) {
-  const location = useLocation();
+  const location1 = useLocation();
   const [isOpen, setIsOpen] = React.useState(false);
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const [color, setColor] = React.useState("info");
@@ -72,18 +72,18 @@ function DemoNavbar(props) {
     dashRoutes.map((prop, key) => {
       if (prop.collapse) {
         prop.views.map((prop, key) => {
-          if (prop.path === props.location.pathname) {
+          if (prop.path === props.location1.pathname) {
             name = prop.name;
           }
           return null;
         });
       } else {
         if (prop.redirect) {
-          if (prop.path === props.location.pathname) {
+          if (prop.path === props.location1.pathname) {
             name = prop.name;
           }
         } else {
-          if (prop.path === props.location.pathname) {
+          if (prop.path === props.location1.pathname) {
             name = prop.name;
           }
         }
@@ -111,10 +111,11 @@ function DemoNavbar(props) {
       document.documentElement.classList.toggle("nav-open");
       sidebarToggle.current.classList.toggle("toggled");
     }
-  }, [location]);
+  }, [location1]);
 
   const Logout = () => {
     Cookies.remove("user_uuid");
+    location.reload();
   }
 
   return (
@@ -136,8 +137,8 @@ function DemoNavbar(props) {
       <Container>
       <div className="logo">
           <div className="logo-img">
-            <img src={logo} width="30px" alt="p-minerals-logo" />
-            <p style={{margin:"20px", fontSize:"20px"}}>Pragathi Minerals</p>
+            <img src={logo} width="40px" alt="p-minerals-logo" />
+            <p style={{margin:"30px",fontSize:"20px", color:"#0C0B45"}}><b>Pragathi Minerals</b></p>
           </div>
       </div>
       <div style={{margin:"auto"}}>
@@ -152,6 +153,7 @@ function DemoNavbar(props) {
         </NavbarToggler>
         <Collapse isOpen={isOpen} navbar className="justify-content-end">
           <Nav navbar>
+          {user.role === "ADMIN" &&
           <NavItem className="nav-item">
               <Link to="/admin/daily-stocks" className="nav-link">
                 <i className="now-ui-icons business_chart-bar-32" />
@@ -160,7 +162,8 @@ function DemoNavbar(props) {
                 </p>
               </Link>
             </NavItem>
-            <NavItem className="nav-item">
+            }
+            {/* <NavItem className="nav-item">
               <Link to="/admin/payments" className="nav-link">
                 <i className="now-ui-icons business_money-coins" />
                 <p>
@@ -175,18 +178,21 @@ function DemoNavbar(props) {
                   <span className="d-lg-none d-md-block">Receipts</span>
                 </p>
               </Link>
-            </NavItem>
+            </NavItem> */}
+        
             {user.role === "ADMIN" &&
-            <NavItem className="nav-item">
-            <Link to="/admin/add-user" className="nav-link">
-              <i className="now-ui-icons users_single-02" />
-              <p>
-                <span className="d-lg-none d-md-block">ADD USERS</span>
-              </p>
-            </Link>
-          </NavItem>
-}
-            <Button onClick={Logout}> LOGOUT</Button>
+              <NavItem className="nav-item">
+                <Link to="/admin/add-user" className="nav-link">
+                  <i className="now-ui-icons users_single-02" />
+                  <p>
+                    <span className="d-lg-none d-md-block">ADD USERS</span>
+                  </p>
+                </Link>
+              </NavItem>
+            }
+            {user.role &&
+              <Button onClick={Logout}> LOGOUT</Button>
+            }
             {/* <Dropdown
               nav
               isOpen={dropdownOpen}

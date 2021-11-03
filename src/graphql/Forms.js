@@ -79,6 +79,20 @@ export const Forms = {
       }
     }
     `,
+    findStockConsumptionDate: gql `query MyQuery($date: date) {
+      stock_consumption(order_by: {date: desc}, where: {date: {_eq: $date}}) {
+        date
+        product_uuid
+        remaining_stock
+        remarks
+        stock_consumption
+        updated_by
+        uuid
+        consumption_product {
+          product_name
+        }
+      }
+    }`,
     deleteInwardStock: gql `mutation DeleteInwardStock($uuid: uuid!) {
       delete_stock_inwards_by_pk(uuid: $uuid) {
         inward_stock
@@ -144,5 +158,52 @@ export const Forms = {
         UUID
       }
     }
-    `
+    `,
+    findProduct: gql `query FindProduct($data:String) {
+      products(where: {product_name: {_iregex: $data}}) {
+        product_name
+      }
+    }
+    `,
+    findProductInwards: gql `query MyQuery {
+      stock_inwards(order_by: {date: desc}) {
+        date
+        inward_stock
+        remaining_stock
+        updated_by
+        uuid
+        product_uuid
+        remarks
+        min_quantity
+        inward_product {
+          product_name
+        }
+      }
+    }
+    `,
+    findProductConsumption: gql `query MyQuery {
+      stock_consumption(order_by: {date: desc}) {
+        date
+        product_uuid
+        remaining_stock
+        remarks
+        stock_consumption
+        updated_by
+        min_quantity
+        uuid
+        consumption_product {
+          product_name
+        }
+      }
+    }
+    `,
+    getProducts: gql `query GetProducts {
+      products(order_by: {product_name: asc}) {
+        net_stock
+        product_name
+        uuid
+      }
+    }
+    
+    `,
 }
