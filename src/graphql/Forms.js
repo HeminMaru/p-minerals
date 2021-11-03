@@ -93,6 +93,20 @@ export const Forms = {
         }
       }
     }`,
+    findStockConsumptionDateRange: gql `query FindStockConsumptionDateRange($start_date: date,$end_date:date) {
+      stock_consumption(order_by: {date: desc}, where: {date: {_gte: $start_date, _lte: $end_date}}) {
+        date
+        product_uuid
+        remaining_stock
+        remarks
+        stock_consumption
+        updated_by
+        uuid
+        consumption_product {
+          product_name
+        }
+      }
+    }`,
     deleteInwardStock: gql `mutation DeleteInwardStock($uuid: uuid!) {
       delete_stock_inwards_by_pk(uuid: $uuid) {
         inward_stock
